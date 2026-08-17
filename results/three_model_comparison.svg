@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">Attack Success Rate by Model</title>
+  <desc id="desc">Llama-2-7B-Chat: 2.2 percent. Vicuna-7B-v1.5: 50.2 percent. Mistral-7B-Instruct-v0.2: 65.8 percent.</desc>
+  <rect width="900" height="520" fill="#0d1117"/>
+  <text x="450" y="50" text-anchor="middle" fill="#f0f6fc" font-family="Arial, sans-serif" font-size="28" font-weight="700">Attack Success Rate (ASR) Comparison</text>
+  <text x="450" y="82" text-anchor="middle" fill="#8b949e" font-family="Arial, sans-serif" font-size="15">400 HarmBench behaviors - DirectRequest baseline</text>
+
+  <line x1="220" y1="120" x2="220" y2="430" stroke="#30363d" stroke-width="2"/>
+  <line x1="220" y1="430" x2="820" y2="430" stroke="#30363d" stroke-width="2"/>
+
+  <g fill="#8b949e" font-family="Arial, sans-serif" font-size="13">
+    <text x="220" y="455" text-anchor="middle">0%</text>
+    <text x="370" y="455" text-anchor="middle">25%</text>
+    <text x="520" y="455" text-anchor="middle">50%</text>
+    <text x="670" y="455" text-anchor="middle">75%</text>
+    <text x="820" y="455" text-anchor="middle">100%</text>
+  </g>
+
+  <g stroke="#21262d" stroke-width="1">
+    <line x1="370" y1="120" x2="370" y2="430"/>
+    <line x1="520" y1="120" x2="520" y2="430"/>
+    <line x1="670" y1="120" x2="670" y2="430"/>
+    <line x1="820" y1="120" x2="820" y2="430"/>
+  </g>
+
+  <g font-family="Arial, sans-serif">
+    <text x="200" y="180" text-anchor="end" fill="#c9d1d9" font-size="16">Llama-2-7B-Chat</text>
+    <rect x="220" y="153" width="13.2" height="42" rx="5" fill="#58a6ff"/>
+    <text x="247" y="180" fill="#f0f6fc" font-size="16" font-weight="700">2.2%</text>
+
+    <text x="200" y="285" text-anchor="end" fill="#c9d1d9" font-size="16">Vicuna-7B-v1.5</text>
+    <rect x="220" y="258" width="301.2" height="42" rx="5" fill="#3fb950"/>
+    <text x="535" y="285" fill="#f0f6fc" font-size="16" font-weight="700">50.2%</text>
+
+    <text x="200" y="390" text-anchor="end" fill="#c9d1d9" font-size="16">Mistral-7B-Instruct-v0.2</text>
+    <rect x="220" y="363" width="394.8" height="42" rx="5" fill="#d29922"/>
+    <text x="629" y="390" fill="#f0f6fc" font-size="16" font-weight="700">65.8%</text>
+  </g>
+
+  <text x="450" y="495" text-anchor="middle" fill="#8b949e" font-family="Arial, sans-serif" font-size="13">Higher ASR = model responded to a larger share of tested harmful requests</text>
+</svg>
