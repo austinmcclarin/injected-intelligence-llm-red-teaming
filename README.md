@@ -10,7 +10,7 @@ A cybersecurity research project evaluating how open-source large language model
 
 ## Project Overview
 
-Large language models introduce security and safety risks that are not fully addressed by traditional application-security controls. This project established a repeatable baseline for evaluating model behavior under harmful inputs and comparing refusal behavior across multiple open-source LLMs.
+Large language models introduce security and safety risks that are not fully addressed by traditional application-security controls. This project established a repeatable baseline for evaluating model behavior under harmful inputs and comparing attack-success behavior across multiple open-source LLMs.
 
 The experiment used:
 
@@ -18,21 +18,22 @@ The experiment used:
 - **400 harmful behavior prompts** from the HarmBench behavior dataset
 - **DirectRequest** as the baseline attack method
 - Three open-source 7B instruction/chat models
+- The **HarmBench classifier label** as the primary success signal
 - **Attack Success Rate (ASR)** as the primary comparison metric
 
-A higher ASR indicates that a model responded to more harmful requests instead of refusing them.
+A higher ASR indicates that the HarmBench classifier identified a larger share of model generations as successful instances of the tested harmful behaviors.
 
 ## Models and Results
 
 | Model | Attack Success Rate | Interpretation |
 | --- | ---: | --- |
-| Llama-2-7B-Chat | **2.2%** | Strongest refusal behavior in this experiment |
-| Vicuna-7B-v1.5 | **50.2%** | Responded to roughly half of tested harmful prompts |
-| Mistral-7B-Instruct-v0.2 | **65.8%** | Highest observed ASR in this experiment |
+| Llama-2-7B-Chat | **2.2%** | Lowest classifier-based ASR in this experiment |
+| Vicuna-7B-v1.5 | **50.2%** | Classifier marked about half of tested behaviors as successful |
+| Mistral-7B-Instruct-v0.2 | **65.8%** | Highest classifier-based ASR in this experiment |
 
 ![Three-model ASR comparison](results/three_model_comparison.svg)
 
-These results are specific to the tested model versions, DirectRequest baseline, HarmBench behavior set, and evaluation method. They should not be interpreted as a complete security assessment of any model family.
+These results are specific to the tested model versions, DirectRequest baseline, HarmBench behavior set, and classifier-based evaluation method. They should not be interpreted as a complete security assessment of any model family.
 
 ## Evaluation Pipeline
 
@@ -52,20 +53,25 @@ HarmBench Behaviors
    src/evaluate_completions.py
         |
         v
+HarmBench Classifier Labels
+        |
+        v
 Attack Success Rate (ASR)
 ```
 
 ### 1. Generate Test Cases
 
-`src/generate_test_cases.py` loads the HarmBench behavior dataset, applies the configured red-teaming method, generates model-ready test cases, and saves the resulting cases and logs.
+`src/generate_test_cases.py` loads the HarmBench behavior dataset and generates test cases using the **DirectRequest** baseline by default.
 
 ### 2. Generate Model Completions
 
-`src/generate_completions.py` loads the configured target model, sends the generated test cases to it, and stores model generations for evaluation. The script supports Hugging Face generation and vLLM-based generation where applicable.
+`src/generate_completions.py` loads the configured target model, sends the generated test cases to it, and stores model generations for later evaluation. The script supports Hugging Face generation and vLLM-based generation where applicable.
 
 ### 3. Evaluate Completions
 
-`src/evaluate_completions.py` evaluates saved generations and calculates attack-success results. The final project used an AdvBench-style refusal metric for its baseline comparison.
+`src/evaluate_completions.py` evaluates saved generations using HarmBench's classifier-based scoring path. The reported ASR is calculated from each result's HarmBench `label` field.
+
+The script can optionally attach the AdvBench keyword-refusal metric with `--include_advbench_metric`, but that optional value is stored separately as `advbench_label` and is **not** the value used for the reported Average ASR.
 
 ## Experimental Environment
 
@@ -114,20 +120,6 @@ The final experiment was completed primarily on the local system after user-leve
 
 The portfolio intentionally keeps a **single consolidated results visualization** and **single project report** rather than uploading multiple duplicate document formats or screenshots that communicate the same information.
 
-## Reproducing the Workflow
-
-The scripts in `src/` were used within the HarmBench project environment and rely on HarmBench modules such as `baselines` and `eval_utils`. They document the implementation used for the project rather than serving as a standalone replacement for HarmBench.
-
-To reproduce the workflow:
-
-1. Clone the upstream [HarmBench](https://github.com/centerforaisafety/HarmBench) repository and follow its environment setup instructions.
-2. Obtain the HarmBench behavior dataset from the upstream project. The raw dataset is **not redistributed here**.
-3. Configure the target model in HarmBench's model configuration.
-4. Run the test-case, completion-generation, and evaluation stages using the scripts preserved in `src/`.
-5. Compare ASR values across models under the same test configuration.
-
-Exact commands depend on the HarmBench configuration and hardware environment being used.
-
 ## Project Documentation
 
 For a more detailed explanation of the methodology, environment, findings, limitations, and future work, see [`docs/PROJECT_REPORT.md`](docs/PROJECT_REPORT.md).
@@ -138,8 +130,9 @@ This project was designed as a baseline evaluation rather than a comprehensive L
 
 - Only the **DirectRequest** attack method was used for the final comparison.
 - All three evaluated models were approximately 7B parameters.
-- Automated refusal detection can misclassify nuanced responses.
+- Automated classifier-based scoring can misclassify nuanced responses.
 - More advanced multi-turn, obfuscated, multimodal, and adaptive attacks were outside the completed experiment's scope.
+- The reported ASR values should be interpreted as HarmBench classifier outcomes for this experiment, not as universal model safety scores.
 
 ## Future Work
 
@@ -150,7 +143,7 @@ Potential extensions identified during the project include:
 - Multimodal/image-based prompt attacks
 - Newer model families such as Llama, Gemma, and Qwen
 - Larger-scale testing using HPC resources
-- More advanced response classifiers and evaluation metrics
+- Comparing multiple scoring methods and response classifiers
 
 ## Responsible Use
 
