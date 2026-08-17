@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# HarmBench-generated experiment data
+# Keep large/model-generated and potentially harmful content out of the portfolio repo.
+test_cases/
+completions/
+evaluation_results/
+outputs/
+logs/
+
+# Third-party datasets
+harmbench_behaviors_text_all.csv
+data/behavior_datasets/
+
+# Model files / caches
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+models/
+.cache/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
