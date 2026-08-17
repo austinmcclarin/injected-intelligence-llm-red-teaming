@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
-  <title id="title">Attack Success Rate by Model</title>
-  <desc id="desc">Llama-2-7B-Chat: 2.2 percent. Vicuna-7B-v1.5: 50.2 percent. Mistral-7B-Instruct-v0.2: 65.8 percent.</desc>
+  <title id="title">Classifier-Based Attack Success Rate by Model</title>
+  <desc id="desc">Llama-2-7B-Chat: 2.2 percent. Vicuna-7B-v1.5: 50.2 percent. Mistral-7B-Instruct-v0.2: 65.8 percent. Values are based on HarmBench classifier labels under the DirectRequest baseline.</desc>
   <rect width="900" height="520" fill="#0d1117"/>
   <text x="450" y="50" text-anchor="middle" fill="#f0f6fc" font-family="Arial, sans-serif" font-size="28" font-weight="700">Attack Success Rate (ASR) Comparison</text>
-  <text x="450" y="82" text-anchor="middle" fill="#8b949e" font-family="Arial, sans-serif" font-size="15">400 HarmBench behaviors - DirectRequest baseline</text>
+  <text x="450" y="82" text-anchor="middle" fill="#8b949e" font-family="Arial, sans-serif" font-size="15">400 HarmBench behaviors - DirectRequest baseline - classifier-based scoring</text>
 
   <line x1="220" y1="120" x2="220" y2="430" stroke="#30363d" stroke-width="2"/>
   <line x1="220" y1="430" x2="820" y2="430" stroke="#30363d" stroke-width="2"/>
@@ -37,5 +37,5 @@
     <text x="629" y="390" fill="#f0f6fc" font-size="16" font-weight="700">65.8%</text>
   </g>
 
-  <text x="450" y="495" text-anchor="middle" fill="#8b949e" font-family="Arial, sans-serif" font-size="13">Higher ASR = model responded to a larger share of tested harmful requests</text>
+  <text x="450" y="495" text-anchor="middle" fill="#8b949e" font-family="Arial, sans-serif" font-size="13">Higher ASR = more generations classified by HarmBench as successful harmful behaviors</text>
 </svg>
