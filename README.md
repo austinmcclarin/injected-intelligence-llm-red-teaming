@@ -6,7 +6,7 @@ A cybersecurity research project evaluating how open-source large language model
 **Course:** CSEC 4483 - Advanced Penetration Testing, Texas A&M University-San Antonio  
 **Completed:** May 2026
 
-> This repository is a portfolio-focused version of the completed school project. Administrative milestone documents, student IDs, duplicate document formats, and the raw third-party HarmBench behavior dataset are intentionally excluded.
+> This repository is a portfolio-focused version of the completed school project. Administrative milestone documents, student IDs, duplicate document formats, raw model outputs, and the third-party HarmBench behavior dataset are intentionally excluded.
 
 ## Project Overview
 
@@ -28,30 +28,28 @@ A higher ASR indicates that a model responded to more harmful requests instead o
 | --- | ---: | --- |
 | Llama-2-7B-Chat | **2.2%** | Strongest refusal behavior in this experiment |
 | Vicuna-7B-v1.5 | **50.2%** | Responded to roughly half of tested harmful prompts |
-| Mistral-7B-Instruct-v0.2 | **65.8%** | Highest observed vulnerability in this experiment |
+| Mistral-7B-Instruct-v0.2 | **65.8%** | Highest observed ASR in this experiment |
 
-![Three-model ASR comparison](results/three_model_comparison.png)
+![Three-model ASR comparison](results/three_model_comparison.svg)
 
 These results are specific to the tested model versions, DirectRequest baseline, HarmBench behavior set, and evaluation method. They should not be interpreted as a complete security assessment of any model family.
 
 ## Evaluation Pipeline
-
-The experiment followed a three-stage workflow:
 
 ```text
 HarmBench Behaviors
         |
         v
 1. Generate Test Cases
-   generate_test_cases.py
+   src/generate_test_cases.py
         |
         v
 2. Generate Model Completions
-   generate_completions.py
+   src/generate_completions.py
         |
         v
 3. Evaluate Completions
-   evaluate_completions.py
+   src/evaluate_completions.py
         |
         v
 Attack Success Rate (ASR)
@@ -59,19 +57,17 @@ Attack Success Rate (ASR)
 
 ### 1. Generate Test Cases
 
-`src/generate_test_cases.py` loads the HarmBench behavior dataset, applies the selected red-teaming method/configuration, generates model-ready test cases, and saves the resulting test cases and logs.
+`src/generate_test_cases.py` loads the HarmBench behavior dataset, applies the configured red-teaming method, generates model-ready test cases, and saves the resulting cases and logs.
 
 ### 2. Generate Model Completions
 
-`src/generate_completions.py` loads the configured target model, sends each generated test case to the model, and stores the resulting generations in JSON format. The script supports Hugging Face generation and vLLM-based generation where applicable.
+`src/generate_completions.py` loads the configured target model, sends the generated test cases to it, and stores model generations for evaluation. The script supports Hugging Face generation and vLLM-based generation where applicable.
 
 ### 3. Evaluate Completions
 
-`src/evaluate_completions.py` evaluates saved generations and calculates attack-success results. The project used the AdvBench-style refusal metric for its final baseline comparison.
+`src/evaluate_completions.py` evaluates saved generations and calculates attack-success results. The final project used an AdvBench-style refusal metric for its baseline comparison.
 
 ## Experimental Environment
-
-The completed project documented the following software and compute environment:
 
 ### Local system
 
@@ -87,7 +83,7 @@ The completed project documented the following software and compute environment:
 - Slurm workload manager
 - NVIDIA A30 GPU resources
 
-The final experiment was completed primarily on the local system after storage/quota constraints made the school HPC environment difficult to use for the workflow.
+The final experiment was completed primarily on the local system after user-level storage/quota constraints made the school HPC workflow difficult to complete.
 
 ### Software stack
 
@@ -95,6 +91,7 @@ The final experiment was completed primarily on the local system after storage/q
 - PyTorch 2.5.1
 - Transformers 4.40
 - vLLM 0.4.3
+- Docker
 - ROCm 6.4
 - HarmBench
 
@@ -110,45 +107,38 @@ The final experiment was completed primarily on the local system after storage/q
 │   ├── generate_completions.py
 │   └── evaluate_completions.py
 ├── results/
-│   ├── llama2_results.png
-│   ├── vicuna_results.png
-│   ├── mistral_results.png
-│   └── three_model_comparison.png
+│   └── three_model_comparison.svg
 └── docs/
-    ├── final-report.pdf
-    └── presentation.pdf
+    └── PROJECT_REPORT.md
 ```
+
+The portfolio intentionally keeps a **single consolidated results visualization** and **single project report** rather than uploading multiple duplicate document formats or screenshots that communicate the same information.
 
 ## Reproducing the Workflow
 
-The scripts in `src/` were used within the HarmBench project environment and rely on HarmBench modules such as `baselines` and `eval_utils`. They are included to document the implementation used for the project rather than as a standalone replacement for HarmBench.
+The scripts in `src/` were used within the HarmBench project environment and rely on HarmBench modules such as `baselines` and `eval_utils`. They document the implementation used for the project rather than serving as a standalone replacement for HarmBench.
 
-To reproduce the experiment:
+To reproduce the workflow:
 
 1. Clone the upstream [HarmBench](https://github.com/centerforaisafety/HarmBench) repository and follow its environment setup instructions.
-2. Obtain the HarmBench behavior dataset from the upstream project. The raw dataset is **not redistributed in this repository**.
+2. Obtain the HarmBench behavior dataset from the upstream project. The raw dataset is **not redistributed here**.
 3. Configure the target model in HarmBench's model configuration.
-4. Use the scripts in `src/` for the test-case, completion-generation, and evaluation stages.
-5. Compare the resulting ASR values across models under the same test configuration.
+4. Run the test-case, completion-generation, and evaluation stages using the scripts preserved in `src/`.
+5. Compare ASR values across models under the same test configuration.
 
 Exact commands depend on the HarmBench configuration and hardware environment being used.
 
-## Results and Documentation
+## Project Documentation
 
-Individual model-result visualizations are available in [`results/`](results/).
-
-The complete academic deliverables are retained as portfolio documentation:
-
-- [`docs/final-report.pdf`](docs/final-report.pdf)
-- [`docs/presentation.pdf`](docs/presentation.pdf)
+For a more detailed explanation of the methodology, environment, findings, limitations, and future work, see [`docs/PROJECT_REPORT.md`](docs/PROJECT_REPORT.md).
 
 ## Limitations
 
-This project was designed as a baseline evaluation rather than a comprehensive LLM security benchmark. Important limitations include:
+This project was designed as a baseline evaluation rather than a comprehensive LLM security benchmark.
 
 - Only the **DirectRequest** attack method was used for the final comparison.
 - All three evaluated models were approximately 7B parameters.
-- The project relied on a refusal-oriented automated scoring method, which can misclassify nuanced responses.
+- Automated refusal detection can misclassify nuanced responses.
 - More advanced multi-turn, obfuscated, multimodal, and adaptive attacks were outside the completed experiment's scope.
 
 ## Future Work
@@ -164,7 +154,7 @@ Potential extensions identified during the project include:
 
 ## Responsible Use
 
-This project was performed for academic cybersecurity research and AI red-teaming education. The purpose is to understand model safety weaknesses, improve evaluation practices, and support stronger safeguards. Testing should only be performed on systems and models you are authorized to evaluate.
+This project was performed for academic cybersecurity research and AI red-teaming education. Its purpose is to understand model safety weaknesses, improve evaluation practices, and support stronger safeguards. Testing should only be performed on systems and models you are authorized to evaluate.
 
 ## Third-Party Attribution
 
